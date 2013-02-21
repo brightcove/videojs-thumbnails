@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <title>Video.js Thumbnails Example</title>
+  <link href="node_modules/video-js/4.0.0-pre/video-js.css" rel="stylesheet">
+  <link href="videojs.thumbnails.css" rel="stylesheet">
+  <style>
+    p {
+      background-color: #eee;
+      border: thin solid #777;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+<p>The thumbnails plugin displays a series of images over the player
+progress bar when the viewer hovers over it or drags the playhead
+around to seek. Give it a shot:</p>
+
+<video id='video'
+       src='http://video-js.zencoder.com/oceans-clip.mp4'
+       class='video-js vjs-default-skin'
+       width='640'
+       height='264'
+       poster='http://video-js.zencoder.com/oceans-clip.jpg'
+       controls>
+</video>
+<script src='node_modules/video-js/4.0.0-pre/video.js'></script>
+<script src='videojs.thumbnails.js'></script>
+<script>
+// initialize video.js
+var video = videojs('video');
+
+// activate the thumbnail plugin
+video.thumbnails({
+  0: {
+    style: 'width: 120px'
+  },
+  10: {
+    style: 'width: 120px; background-position: 120px 0'
+  },
+  20: {
+    style: 'width: 120px; background-position: 240px 0'
+  },
+  30: {
+    style: 'width: 120px; background-position: 360px 0'
+  },
+  40: {
+    style: 'width: 120px; background-position: 480px 0'
+  }
+});
+</script>
+</body>
+</html>

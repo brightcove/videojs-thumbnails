@@ -1,0 +1,11 @@
+.vjs-thumbnail {
+  position: absolute;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity .2s ease;
+  -webkit-transition: opacity .2s ease;
+  -moz-transition: opacity .2s ease;
+}
+.vjs-progress-control:hover .vjs-thumbnail {
+  opacity: 1;
+}
