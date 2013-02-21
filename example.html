@@ -32,11 +32,18 @@ around to seek. Give it a shot:</p>
 var video = videojs('video');
 
 // activate the thumbnail plugin
+/*
+video.thumbnails({
+  0: {
+    src: 'example-thumbnail.png'
+  }
+});
+*/
 video.thumbnails({
   0: {
     src: 'thumbnails.png',
     style: {
-      left: '-120px',
+      left: '-60px',
       width: '600px',
       height: '68px',
       clip: 'rect(0, 120px, 68px, 0)'
@@ -44,25 +51,25 @@ video.thumbnails({
   },
   10: {
     style: {
-      left: '-240px',
+      left: '-180px',
       clip: 'rect(0, 240px, 68px, 120px)'
     }
   },
   20: {
     style: {
-      left: '-360px',
+      left: '-300px',
       clip: 'rect(0, 360px, 68px, 240px)'
     }
   },
   30: {
     style: {
-      left: '-480px',
+      left: '-420px',
       clip: 'rect(0, 480px, 68px, 360px)'
     }
   },
   40: {
     style: {
-      left: '-600px',
+      left: '-540px',
       clip: 'rect(0, 600px, 68px, 480px)'
     }
   }

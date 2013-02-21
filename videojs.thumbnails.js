@@ -27,38 +27,48 @@
    * register the thubmnails plugin
    */
   videojs.plugin('thumbnails', function(options) {
-    var div, settings, img, player, progressControl, duration, updateThumbnail;
+    var div, settings, img, player, progressControl, duration;
     settings = extend(defaults, options);
     player = this;
 
-    // create the thumbnail image
+    // create the thumbnail
     div = document.createElement('div');
     div.className = 'vjs-thumbnail-holder';
     img = document.createElement('img');
     div.appendChild(img);
     img.src = settings['0'].src;
-    extend(img.style, settings['0'].style);
     img.className = 'vjs-thumbnail';
+    extend(img.style, settings['0'].style);
+
+    // center the thumbnail over the cursor if an offset wasn't provided
+    if (!img.style.left) {
+      img.onload = function() {
+        img.style.left = -(img.naturalWidth / 2) + 'px';
+      }
+    };
 
     // keep track of the duration to calculate correct thumbnail to display
-    duration = 50; // player.duration();
+    duration = player.duration();
     player.on('durationchange', function(event) {
-      // duration = player.duration();
+      duration = player.duration();
     });
 
     // add the thumbnail to the player
     progressControl = player.controlBar.progressControl;
     progressControl.el().appendChild(div);
 
-    // listener to update the thumbnail while hovering
-    updateThumbnail = function(event) {
+    // update the thumbnail while hovering
+    progressControl.el().addEventListener('mousemove', function(event) {
       var mouseTime, time, active, left, setting;
       active = 0;
-      // move the thumbnail
+
+      // find the page offset of the mouse
       left = event.pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+      // subtract the page offset of the progress control
+      left -= progressControl.el().getBoundingClientRect().left + window.scrollX;
       div.style.left = left + 'px';
 
-      // update the thumbnail if necessary
+      // apply updated styles to the thumbnail if necessary
       mouseTime = Math.floor(event.offsetX / progressControl.width() * duration);
       for (time in settings) {
         if (mouseTime > time) {
@@ -72,23 +82,6 @@
       if (setting.style && img.style != setting.style) {
         extend(img.style, setting.style);
       }
-    };
-    // display the thumbnail and listen for mouse movements
-    progressControl.on('mouseover', function(event) {
-      if (event.target === progressControl.el()) {
-        img.className += ' vjs-thumbnail-hover';
-        img.style.left = event.offsetX + 'px';
-        progressControl.el().addEventListener('mousemove', updateThumbnail, false);
-      }
-    });
-    // hide the thumbnail and stop listening for mouse movements
-    progressControl.on('mouseout', function(event) {
-      var toElement = event.relatedTarget || event.toElement;
-      if (toElement !== progressControl.seekBar.el()) {
-        img.className = img.className.replace(/(?:^|\s)vjs-thumbnail-hover(?!\S)/g , '');
-        progressControl.el().removeEventListener('mousemove', updateThumbnail);
-      }
-    });
-    
+    }, false);
   });
 })();
