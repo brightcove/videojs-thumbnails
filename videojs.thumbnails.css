@@ -1,6 +1,9 @@
+.vjs-thumbnail-holder {
+  position: absolute;
+}
 .vjs-thumbnail {
   position: absolute;
-  bottom: 12px;
+  bottom: 1.3em;
   opacity: 0;
   transition: opacity .2s ease;
   -webkit-transition: opacity .2s ease;

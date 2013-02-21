@@ -34,19 +34,37 @@ var video = videojs('video');
 // activate the thumbnail plugin
 video.thumbnails({
   0: {
-    style: 'width: 120px'
+    src: 'thumbnails.png',
+    style: {
+      left: '-120px',
+      width: '600px',
+      height: '68px',
+      clip: 'rect(0, 120px, 68px, 0)'
+    }
   },
   10: {
-    style: 'width: 120px; background-position: 120px 0'
+    style: {
+      left: '-240px',
+      clip: 'rect(0, 240px, 68px, 120px)'
+    }
   },
   20: {
-    style: 'width: 120px; background-position: 240px 0'
+    style: {
+      left: '-360px',
+      clip: 'rect(0, 360px, 68px, 240px)'
+    }
   },
   30: {
-    style: 'width: 120px; background-position: 360px 0'
+    style: {
+      left: '-480px',
+      clip: 'rect(0, 480px, 68px, 360px)'
+    }
   },
   40: {
-    style: 'width: 120px; background-position: 480px 0'
+    style: {
+      left: '-600px',
+      clip: 'rect(0, 600px, 68px, 480px)'
+    }
   }
 });
 </script>

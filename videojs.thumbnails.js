@@ -27,29 +27,51 @@
    * register the thubmnails plugin
    */
   videojs.plugin('thumbnails', function(options) {
-    var settings, img, player, progressControl, duration, updateThumbnail;
+    var div, settings, img, player, progressControl, duration, updateThumbnail;
     settings = extend(defaults, options);
     player = this;
 
     // create the thumbnail image
+    div = document.createElement('div');
+    div.className = 'vjs-thumbnail-holder';
     img = document.createElement('img');
+    div.appendChild(img);
     img.src = settings['0'].src;
-    img.setAttribute('style', settings['0'].style || '');
-    img.setAttribute('class', 'vjs-thumbnail');
+    extend(img.style, settings['0'].style);
+    img.className = 'vjs-thumbnail';
 
     // keep track of the duration to calculate correct thumbnail to display
-    duration = player.duration();
+    duration = 50; // player.duration();
     player.on('durationchange', function(event) {
-      duration = player.duration();
+      // duration = player.duration();
     });
 
     // add the thumbnail to the player
     progressControl = player.controlBar.progressControl;
-    progressControl.el().appendChild(img);
+    progressControl.el().appendChild(div);
 
-    // listener to adjust the thumbnail position while hovering
+    // listener to update the thumbnail while hovering
     updateThumbnail = function(event) {
-      img.style.left = event.offsetX + 'px';
+      var mouseTime, time, active, left, setting;
+      active = 0;
+      // move the thumbnail
+      left = event.pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+      div.style.left = left + 'px';
+
+      // update the thumbnail if necessary
+      mouseTime = Math.floor(event.offsetX / progressControl.width() * duration);
+      for (time in settings) {
+        if (mouseTime > time) {
+          active = Math.max(active, time);
+        }
+      }
+      setting = settings[active];
+      if (setting.src && img.src != setting.src) {
+        img.src = setting.src;
+      }
+      if (setting.style && img.style != setting.style) {
+        extend(img.style, setting.style);
+      }
     };
     // display the thumbnail and listen for mouse movements
     progressControl.on('mouseover', function(event) {
