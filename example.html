@@ -31,14 +31,7 @@ around to seek. Give it a shot:</p>
 // initialize video.js
 var video = videojs('video');
 
-// activate the thumbnail plugin
-/*
-video.thumbnails({
-  0: {
-    src: 'example-thumbnail.png'
-  }
-});
-*/
+// here's an example of generating thumbnails from a sprited image:
 video.thumbnails({
   0: {
     src: 'thumbnails.png',
@@ -74,6 +67,15 @@ video.thumbnails({
     }
   }
 });
+
+// and here's an example of the bare-minimum plugin configuration:
+/*
+video.thumbnails({
+  0: {
+    src: 'example-thumbnail.png'
+  }
+});
+*/
 </script>
 </body>
 </html>
