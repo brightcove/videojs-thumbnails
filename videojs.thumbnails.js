@@ -28,7 +28,7 @@
    */
   videojs.plugin('thumbnails', function(options) {
     var div, settings, img, player, progressControl, duration;
-    settings = extend(defaults, options);
+    settings = extend({}, defaults, options);
     player = this;
 
     // create the thumbnail
