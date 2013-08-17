@@ -65,7 +65,7 @@
       // find the page offset of the mouse
       left = event.pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the progress control
-      left -= progressControl.el().getBoundingClientRect().left + window.scrollX;
+      left -= progressControl.el().getBoundingClientRect().left + window.pageXOffset;
       div.style.left = left + 'px';
 
       // apply updated styles to the thumbnail if necessary
