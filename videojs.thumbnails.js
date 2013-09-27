@@ -66,6 +66,9 @@
       left = event.pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the progress control
       left -= progressControl.el().getBoundingClientRect().left + window.scrollX;
+      // Stay within the bounds of the video
+      left = Math.max(left, img.naturalWidth / 2);
+      left = Math.min(left, progressControl.el().offsetWidth - (img.naturalWidth / 2));
       div.style.left = left + 'px';
 
       // apply updated styles to the thumbnail if necessary
