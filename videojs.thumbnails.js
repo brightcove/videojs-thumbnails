@@ -83,5 +83,10 @@
         extend(img.style, setting.style);
       }
     }, false);
+    
+    // move the placeholder out of the way when not hovering
+    progressControl.el().addEventListener('mouseout', function(event) {
+      div.style.left = '-1000px';
+    }, false);
   });
 })();
