@@ -21,6 +21,21 @@
         }
       }
       return target;
+    },
+    getComputedStyle = function(el, pseudo) {
+      return function(prop) {
+        if (window.getComputedStyle) {
+          return window.getComputedStyle(el, pseudo)[prop];
+        } else {
+          return el.currentStyle[prop];
+        }
+      };
+    },
+    offsetParent = function(el) {
+      if (el.nodeName !== 'HTML' && getComputedStyle(el)('position') === 'static') {
+        return offsetParent(el.offsetParent);
+      }
+      return el;
     };
 
   /**
@@ -64,8 +79,8 @@
 
       // find the page offset of the mouse
       left = event.pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
-      // subtract the page offset of the progress control
-      left -= progressControl.el().getBoundingClientRect().left + window.pageXOffset;
+      // subtract the page offset of the positioned offset parent
+      left -= offsetParent(progressControl.el()).getBoundingClientRect().left + window.pageXOffset;
       div.style.left = left + 'px';
 
       // apply updated styles to the thumbnail if necessary
@@ -83,10 +98,13 @@
         extend(img.style, setting.style);
       }
     }, false);
-    
+
     // move the placeholder out of the way when not hovering
     progressControl.el().addEventListener('mouseout', function(event) {
       div.style.left = '-1000px';
     }, false);
+    player.on('userinactive', function(event) {
+      div.style.left = '-1000px';
+    });
   });
 })();
