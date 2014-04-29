@@ -3,7 +3,7 @@
   "description": "progress bar thumbnails plugin for video.js",
   "version": "0.0.1",
   "peerDependencies": {
-    "video-js": "4.0"
+    "video.js": "^4.0"
   },
   "devDependencies": {
     "grunt": "^0.4.4",
