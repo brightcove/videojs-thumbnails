@@ -59,8 +59,8 @@
     if (!img.style.left && !img.style.right) {
       img.onload = function() {
         img.style.left = -(img.naturalWidth / 2) + 'px';
-      }
-    };
+      };
+    }
 
     // keep track of the duration to calculate correct thumbnail to display
     duration = player.duration();
