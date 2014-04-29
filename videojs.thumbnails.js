@@ -42,7 +42,7 @@
    * register the thubmnails plugin
    */
   videojs.plugin('thumbnails', function(options) {
-    var div, settings, img, player, progressControl, duration;
+    var div, settings, img, player, progressControl, duration, moveListener, moveCancel;
     settings = extend({}, defaults, options);
     player = this;
 
@@ -72,8 +72,7 @@
     progressControl = player.controlBar.progressControl;
     progressControl.el().appendChild(div);
 
-    // update the thumbnail while hovering
-    progressControl.el().addEventListener('mousemove', function(event) {
+    moveListener = function(event) {
       var mouseTime, time, active, left, setting;
       active = 0;
 
@@ -101,14 +100,20 @@
       if (setting.style && img.style != setting.style) {
         extend(img.style, setting.style);
       }
-    }, false);
+    };
+
+    // update the thumbnail while hovering
+    progressControl.el().addEventListener('mousemove', moveListener, false);
+    progressControl.el().addEventListener('touchmove', moveListener, false);
+
+    moveCancel = function(event) {
+      div.style.left = '-1000px';
+    };
 
     // move the placeholder out of the way when not hovering
-    progressControl.el().addEventListener('mouseout', function(event) {
-      div.style.left = '-1000px';
-    }, false);
-    player.on('userinactive', function(event) {
-      div.style.left = '-1000px';
-    });
+    progressControl.el().addEventListener('mouseout', moveCancel, false);
+    progressControl.el().addEventListener('touchcancel', moveCancel, false);
+    progressControl.el().addEventListener('touchend', moveCancel, false);
+    player.on('userinactive', moveCancel);
   });
 })();
