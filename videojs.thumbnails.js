@@ -84,6 +84,10 @@
       div.style.left = left + 'px';
 
       // apply updated styles to the thumbnail if necessary
+      // mouseTime is the position of the mouse along the progress control bar
+      // `left` applies to the mouse position relative to the player so we need
+      // to remove the progress control's left offset to know the mouse position
+      // relative to the progress control
       mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
       for (time in settings) {
         if (mouseTime > time) {
