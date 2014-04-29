@@ -84,7 +84,7 @@
       div.style.left = left + 'px';
 
       // apply updated styles to the thumbnail if necessary
-      mouseTime = Math.floor(event.offsetX / progressControl.width() * duration);
+      mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
       for (time in settings) {
         if (mouseTime > time) {
           active = Math.max(active, time);
