@@ -38,6 +38,26 @@
       return el;
     };
 
+  (function() {
+    var progressControl, addFakeActive, removeFakeActive;
+    // Android doesn't support :active and :hover on non-anchor and non-button elements
+    // so, we need to fake the :active selector for thumbnails to show up.
+    if (navigator.userAgent.toLowerCase().indexOf("android") !== -1) {
+      progressControl = player.controlBar.progressControl;
+
+      addFakeActive = function() {
+        progressControl.addClass('fake-active');
+      };
+      removeFakeActive = function() {
+        progressControl.removeClass('fake-active');
+      };
+
+      progressControl.on('touchstart', addFakeActive);
+      progressControl.on('touchend', removeFakeActive);
+      progressControl.on('touchcancel', removeFakeActive);
+    }
+  })();
+
   /**
    * register the thubmnails plugin
    */
@@ -73,11 +93,15 @@
     progressControl.el().appendChild(div);
 
     moveListener = function(event) {
-      var mouseTime, time, active, left, setting;
+      var mouseTime, time, active, left, setting, pageX;
       active = 0;
 
+      if (event.changedTouches) {
+        pageX = event.changedTouches[0].pageX;
+      }
+
       // find the page offset of the mouse
-      left = event.pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+      left = pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the positioned offset parent
       left -= offsetParent(progressControl.el()).getBoundingClientRect().left + window.pageXOffset;
       div.style.left = left + 'px';
