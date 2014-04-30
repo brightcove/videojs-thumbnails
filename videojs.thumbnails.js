@@ -96,6 +96,7 @@
       var mouseTime, time, active, left, setting, pageX;
       active = 0;
 
+      pageX = event.pageX;
       if (event.changedTouches) {
         pageX = event.changedTouches[0].pageX;
       }
