@@ -38,11 +38,31 @@
       return el;
     };
 
+  (function() {
+    var progressControl, addFakeActive, removeFakeActive;
+    // Android doesn't support :active and :hover on non-anchor and non-button elements
+    // so, we need to fake the :active selector for thumbnails to show up.
+    if (navigator.userAgent.toLowerCase().indexOf("android") !== -1) {
+      progressControl = player.controlBar.progressControl;
+
+      addFakeActive = function() {
+        progressControl.addClass('fake-active');
+      };
+      removeFakeActive = function() {
+        progressControl.removeClass('fake-active');
+      };
+
+      progressControl.on('touchstart', addFakeActive);
+      progressControl.on('touchend', removeFakeActive);
+      progressControl.on('touchcancel', removeFakeActive);
+    }
+  })();
+
   /**
    * register the thubmnails plugin
    */
   videojs.plugin('thumbnails', function(options) {
-    var div, settings, img, player, progressControl, duration;
+    var div, settings, img, player, progressControl, duration, moveListener, moveCancel;
     settings = extend({}, defaults, options);
     player = this;
 
@@ -72,13 +92,17 @@
     progressControl = player.controlBar.progressControl;
     progressControl.el().appendChild(div);
 
-    // update the thumbnail while hovering
-    progressControl.el().addEventListener('mousemove', function(event) {
-      var mouseTime, time, active, left, setting;
+    moveListener = function(event) {
+      var mouseTime, time, active, left, setting, pageX;
       active = 0;
 
+      pageX = event.pageX;
+      if (event.changedTouches) {
+        pageX = event.changedTouches[0].pageX;
+      }
+
       // find the page offset of the mouse
-      left = event.pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
+      left = pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the positioned offset parent
       left -= offsetParent(progressControl.el()).getBoundingClientRect().left + window.pageXOffset;
       div.style.left = left + 'px';
@@ -101,14 +125,20 @@
       if (setting.style && img.style != setting.style) {
         extend(img.style, setting.style);
       }
-    }, false);
+    };
+
+    // update the thumbnail while hovering
+    progressControl.el().addEventListener('mousemove', moveListener, false);
+    progressControl.el().addEventListener('touchmove', moveListener, false);
+
+    moveCancel = function(event) {
+      div.style.left = '-1000px';
+    };
 
     // move the placeholder out of the way when not hovering
-    progressControl.el().addEventListener('mouseout', function(event) {
-      div.style.left = '-1000px';
-    }, false);
-    player.on('userinactive', function(event) {
-      div.style.left = '-1000px';
-    });
+    progressControl.el().addEventListener('mouseout', moveCancel, false);
+    progressControl.el().addEventListener('touchcancel', moveCancel, false);
+    progressControl.el().addEventListener('touchend', moveCancel, false);
+    player.on('userinactive', moveCancel);
   });
 })();
