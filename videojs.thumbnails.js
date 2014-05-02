@@ -94,7 +94,19 @@
 
     moveListener = function(event) {
       var mouseTime, time, active, left, setting, pageX;
+      var right;
+      var width;
+      var clip
       active = 0;
+
+      right = offsetParent(progressControl.el()).getBoundingClientRect().right + window.pageXOffset;
+      clip = (getComputedStyle(img)('clip'));
+      if (clip) {
+        clip = clip.split(/(?:\(|\))/)[1].split(/(?:,| )/);
+        if (clip.length === 4) {
+          width = parseFloat(clip[1]) - parseFloat(clip[3]);
+        }
+      }
 
       pageX = event.pageX;
       if (event.changedTouches) {
@@ -105,6 +117,11 @@
       left = pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the positioned offset parent
       left -= offsetParent(progressControl.el()).getBoundingClientRect().left + window.pageXOffset;
+
+      if ( (left + width/2) > right ) {
+        left -= (left + width/2) - right;
+      }
+
       div.style.left = left + 'px';
 
       // apply updated styles to the thumbnail if necessary
