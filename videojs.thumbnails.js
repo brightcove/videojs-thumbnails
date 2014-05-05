@@ -37,8 +37,13 @@
       }
       return el;
     },
-    getWidth = function(el) {
+    getWidth = function(el, setting) {
       var clip;
+
+      if (setting.width) {
+        return parseFloat(setting.width);
+      }
+
       clip = getComputedStyle(el)('clip');
       if (clip) {
         clip = clip.split(/(?:\(|\))/)[1].split(/(?:,| )/);
@@ -108,8 +113,6 @@
       active = 0;
 
       right = offsetParent(progressControl.el()).getBoundingClientRect().right + window.pageXOffset;
-      width = getWidth(img);
-      halfWidth = width / 2;
 
       pageX = event.pageX;
       if (event.changedTouches) {
@@ -120,15 +123,6 @@
       left = pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the positioned offset parent
       left -= offsetParent(progressControl.el()).getBoundingClientRect().left + window.pageXOffset;
-
-      // make sure that the thumbnail doesn't fall off the right side of the left side of the player
-      if ( (left + halfWidth) > right ) {
-        left -= (left + halfWidth) - right;
-      } else if (left < halfWidth) {
-        left = halfWidth;
-      }
-
-      div.style.left = left + 'px';
 
       // apply updated styles to the thumbnail if necessary
       // mouseTime is the position of the mouse along the progress control bar
@@ -148,6 +142,18 @@
       if (setting.style && img.style != setting.style) {
         extend(img.style, setting.style);
       }
+
+      width = getWidth(img, setting);
+      halfWidth = width / 2;
+
+      // make sure that the thumbnail doesn't fall off the right side of the left side of the player
+      if ( (left + halfWidth) > right ) {
+        left -= (left + halfWidth) - right;
+      } else if (left < halfWidth) {
+        left = halfWidth;
+      }
+
+      div.style.left = left + 'px';
     };
 
     // update the thumbnail while hovering
