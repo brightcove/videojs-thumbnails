@@ -37,11 +37,11 @@
       }
       return el;
     },
-    getWidth = function(el, setting) {
+    getVisibleWidth = function(el, width) {
       var clip;
 
-      if (setting.width) {
-        return parseFloat(setting.width);
+      if (width) {
+        return parseFloat(width);
       }
 
       clip = getComputedStyle(el)('clip');
@@ -143,7 +143,7 @@
         extend(img.style, setting.style);
       }
 
-      width = getWidth(img, setting);
+      width = getVisibleWidth(img, setting.width || settings[0].width);
       halfWidth = width / 2;
 
       // make sure that the thumbnail doesn't fall off the right side of the left side of the player
