@@ -112,7 +112,7 @@
       var mouseTime, time, active, left, setting, pageX, right, width, halfWidth;
       active = 0;
 
-      right = offsetParent(progressControl.el()).getBoundingClientRect().right + window.pageXOffset;
+      right = offsetParent(progressControl.el()).getBoundingClientRect().width + window.pageXOffset;
 
       pageX = event.pageX;
       if (event.changedTouches) {
