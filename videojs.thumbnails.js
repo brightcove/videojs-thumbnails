@@ -45,7 +45,7 @@
       }
 
       clip = getComputedStyle(el)('clip');
-      if (clip) {
+      if (clip !== 'auto' && clip !== 'inherit') {
         clip = clip.split(/(?:\(|\))/)[1].split(/(?:,| )/);
         if (clip.length === 4) {
           return (parseFloat(clip[1]) - parseFloat(clip[3]));
