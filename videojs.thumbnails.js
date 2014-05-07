@@ -157,17 +157,17 @@
     };
 
     // update the thumbnail while hovering
-    progressControl.el().addEventListener('mousemove', moveListener, false);
-    progressControl.el().addEventListener('touchmove', moveListener, false);
+    progressControl.on('mousemove', moveListener);
+    progressControl.on('touchmove', moveListener);
 
     moveCancel = function(event) {
       div.style.left = '-1000px';
     };
 
     // move the placeholder out of the way when not hovering
-    progressControl.el().addEventListener('mouseout', moveCancel, false);
-    progressControl.el().addEventListener('touchcancel', moveCancel, false);
-    progressControl.el().addEventListener('touchend', moveCancel, false);
+    progressControl.on('mouseout', moveCancel);
+    progressControl.on('touchcancel', moveCancel);
+    progressControl.on('touchend', moveCancel);
     player.on('userinactive', moveCancel);
   });
 })();
