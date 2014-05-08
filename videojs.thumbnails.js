@@ -66,26 +66,6 @@
       }
     };
 
-  (function() {
-    var progressControl, addFakeActive, removeFakeActive;
-    // Android doesn't support :active and :hover on non-anchor and non-button elements
-    // so, we need to fake the :active selector for thumbnails to show up.
-    if (navigator.userAgent.toLowerCase().indexOf("android") !== -1) {
-      progressControl = player.controlBar.progressControl;
-
-      addFakeActive = function() {
-        progressControl.addClass('fake-active');
-      };
-      removeFakeActive = function() {
-        progressControl.removeClass('fake-active');
-      };
-
-      progressControl.on('touchstart', addFakeActive);
-      progressControl.on('touchend', removeFakeActive);
-      progressControl.on('touchcancel', removeFakeActive);
-    }
-  })();
-
   /**
    * register the thubmnails plugin
    */
@@ -93,6 +73,26 @@
     var div, settings, img, player, progressControl, duration, moveListener, moveCancel;
     settings = extend({}, defaults, options);
     player = this;
+
+    (function() {
+      var progressControl, addFakeActive, removeFakeActive;
+      // Android doesn't support :active and :hover on non-anchor and non-button elements
+      // so, we need to fake the :active selector for thumbnails to show up.
+      if (navigator.userAgent.toLowerCase().indexOf("android") !== -1) {
+        progressControl = player.controlBar.progressControl;
+
+        addFakeActive = function() {
+          progressControl.addClass('fake-active');
+        };
+        removeFakeActive = function() {
+          progressControl.removeClass('fake-active');
+        };
+
+        progressControl.on('touchstart', addFakeActive);
+        progressControl.on('touchend', removeFakeActive);
+        progressControl.on('touchcancel', removeFakeActive);
+      }
+    })();
 
     // create the thumbnail
     div = document.createElement('div');
