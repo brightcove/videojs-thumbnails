@@ -52,6 +52,18 @@
         }
       }
       return 0;
+    },
+    getScrollOffset = function() {
+      if (window.pageXOffset) {
+        return {
+          x: window.pageXOffset,
+          y: window.pageYOffset
+        };
+      }
+      return {
+        x: document.documentElement.scrollLeft,
+        y: document.documentElement.scrollTop
+      }
     };
 
   (function() {
@@ -109,10 +121,11 @@
     progressControl.el().appendChild(div);
 
     moveListener = function(event) {
-      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth;
+      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect;
       active = 0;
-
-      right = offsetParent(progressControl.el()).getBoundingClientRect().width + window.pageXOffset;
+      pageXOffset = getScrollOffset().x;
+      clientRect = offsetParent(progressControl.el()).getBoundingClientRect()
+      right = (clientRect.width || clientRect.right) + pageXOffset;
 
       pageX = event.pageX;
       if (event.changedTouches) {
@@ -122,7 +135,7 @@
       // find the page offset of the mouse
       left = pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the positioned offset parent
-      left -= offsetParent(progressControl.el()).getBoundingClientRect().left + window.pageXOffset;
+      left -= offsetParent(progressControl.el()).getBoundingClientRect().left + pageXOffset;
 
       // apply updated styles to the thumbnail if necessary
       // mouseTime is the position of the mouse along the progress control bar
