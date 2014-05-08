@@ -63,7 +63,7 @@
       return {
         x: document.documentElement.scrollLeft,
         y: document.documentElement.scrollTop
-      }
+      };
     };
 
   /**
@@ -124,7 +124,7 @@
       var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect;
       active = 0;
       pageXOffset = getScrollOffset().x;
-      clientRect = offsetParent(progressControl.el()).getBoundingClientRect()
+      clientRect = offsetParent(progressControl.el()).getBoundingClientRect();
       right = (clientRect.width || clientRect.right) + pageXOffset;
 
       pageX = event.pageX;
