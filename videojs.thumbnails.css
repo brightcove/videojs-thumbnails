@@ -1,6 +1,7 @@
 /* a wrapper element that tracks the mouse vertically */
 .vjs-thumbnail-holder {
   position: absolute;
+  left: -1000px;
 }
 
 /* the thumbnail image itself */
@@ -12,6 +13,7 @@
   transition: opacity .2s ease;
   -webkit-transition: opacity .2s ease;
   -moz-transition: opacity .2s ease;
+  -mz-transition: opacity .2s ease;
 }
 
 /* fade in the thumbnail when hovering over the progress bar */

@@ -52,27 +52,19 @@
         }
       }
       return 0;
+    },
+    getScrollOffset = function() {
+      if (window.pageXOffset) {
+        return {
+          x: window.pageXOffset,
+          y: window.pageYOffset
+        };
+      }
+      return {
+        x: document.documentElement.scrollLeft,
+        y: document.documentElement.scrollTop
+      };
     };
-
-  (function() {
-    var progressControl, addFakeActive, removeFakeActive;
-    // Android doesn't support :active and :hover on non-anchor and non-button elements
-    // so, we need to fake the :active selector for thumbnails to show up.
-    if (navigator.userAgent.toLowerCase().indexOf("android") !== -1) {
-      progressControl = player.controlBar.progressControl;
-
-      addFakeActive = function() {
-        progressControl.addClass('fake-active');
-      };
-      removeFakeActive = function() {
-        progressControl.removeClass('fake-active');
-      };
-
-      progressControl.on('touchstart', addFakeActive);
-      progressControl.on('touchend', removeFakeActive);
-      progressControl.on('touchcancel', removeFakeActive);
-    }
-  })();
 
   /**
    * register the thubmnails plugin
@@ -81,6 +73,26 @@
     var div, settings, img, player, progressControl, duration, moveListener, moveCancel;
     settings = extend({}, defaults, options);
     player = this;
+
+    (function() {
+      var progressControl, addFakeActive, removeFakeActive;
+      // Android doesn't support :active and :hover on non-anchor and non-button elements
+      // so, we need to fake the :active selector for thumbnails to show up.
+      if (navigator.userAgent.toLowerCase().indexOf("android") !== -1) {
+        progressControl = player.controlBar.progressControl;
+
+        addFakeActive = function() {
+          progressControl.addClass('fake-active');
+        };
+        removeFakeActive = function() {
+          progressControl.removeClass('fake-active');
+        };
+
+        progressControl.on('touchstart', addFakeActive);
+        progressControl.on('touchend', removeFakeActive);
+        progressControl.on('touchcancel', removeFakeActive);
+      }
+    })();
 
     // create the thumbnail
     div = document.createElement('div');
@@ -109,10 +121,11 @@
     progressControl.el().appendChild(div);
 
     moveListener = function(event) {
-      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth;
+      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect;
       active = 0;
-
-      right = offsetParent(progressControl.el()).getBoundingClientRect().width + window.pageXOffset;
+      pageXOffset = getScrollOffset().x;
+      clientRect = offsetParent(progressControl.el()).getBoundingClientRect();
+      right = (clientRect.width || clientRect.right) + pageXOffset;
 
       pageX = event.pageX;
       if (event.changedTouches) {
@@ -122,7 +135,7 @@
       // find the page offset of the mouse
       left = pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the positioned offset parent
-      left -= offsetParent(progressControl.el()).getBoundingClientRect().left + window.pageXOffset;
+      left -= offsetParent(progressControl.el()).getBoundingClientRect().left + pageXOffset;
 
       // apply updated styles to the thumbnail if necessary
       // mouseTime is the position of the mouse along the progress control bar

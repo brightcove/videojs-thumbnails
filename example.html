@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Video.js Thumbnails Example</title>
-  <link href="http://vjs.zencdn.net/4.0/video-js.css" rel="stylesheet">
+  <link href="node_modules/video.js/dist/video-js/video-js.css" rel="stylesheet">
   <link href="videojs.thumbnails.css" rel="stylesheet">
   <style>
     p {
@@ -11,6 +11,8 @@
       padding: 10px;
     }
   </style>
+<script src="node_modules/video.js/dist/video-js/video.js"></script>
+<script src='videojs.thumbnails.js'></script>
 </head>
 <body>
 <p>The thumbnails plugin displays a series of images over the player
@@ -25,8 +27,6 @@ around to seek. Give it a shot:</p>
        poster='http://video-js.zencoder.com/oceans-clip.jpg'
        controls>
 </video>
-<script src="http://vjs.zencdn.net/4.0/video.js"></script>
-<script src='videojs.thumbnails.js'></script>
 <script>
 // initialize video.js
 var video = videojs('video');
