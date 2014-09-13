@@ -121,7 +121,7 @@
     progressControl.el().appendChild(div);
 
     moveListener = function(event) {
-      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect;
+      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect, handle, handleW;
       active = 0;
       pageXOffset = getScrollOffset().x;
       clientRect = offsetParent(progressControl.el()).getBoundingClientRect();
@@ -142,10 +142,12 @@
       // `left` applies to the mouse position relative to the player so we need
       // to remove the progress control's left offset to know the mouse position
       // relative to the progress control
-      mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
+      handle = progressControl.seekBar.handle;
+      handleW = handle.width();
+      mouseTime = Math.floor((left - progressControl.el().offsetLeft - handleW/2) / (progressControl.width() - handleW) * duration);
       for (time in settings) {
-        if (mouseTime > time) {
-          active = Math.max(active, time);
+        if (mouseTime >= time) {
+          active = time;
         }
       }
       setting = settings[active];
