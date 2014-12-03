@@ -14,9 +14,17 @@ module.exports = function(grunt) {
         src: 'videojs.thumbnails.js'
       }
     },
+    connect: {
+      server: {
+        options: {
+          keepalive: true
+        }
+      }
+    }
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   grunt.registerTask('default', ['jshint']);
 };

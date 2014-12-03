@@ -112,7 +112,14 @@
 
     // keep track of the duration to calculate correct thumbnail to display
     duration = player.duration();
+    
+    // when the container is MP4
     player.on('durationchange', function(event) {
+      duration = player.duration();
+    });
+
+    // when the container is HLS
+    player.on('loadedmetadata', function(event) {
       duration = player.duration();
     });
 
