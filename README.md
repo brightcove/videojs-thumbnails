@@ -2,6 +2,8 @@ Video.js Thumbnails
 ===================
 A plugin that allows you to configure thumbnails to display when the user is hovering over the progress bar or dragging it to seek.
 
+[![Build Status](https://travis-ci.org/brightcove/videojs-thumbnails.svg?branch=master)](https://travis-ci.org/brightcove/videojs-thummbnails)
+
 Using the Plugin
 ----------------
 The plugin automatically registers itself when you include video.thumbnails.js in your page:
