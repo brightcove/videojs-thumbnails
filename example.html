@@ -26,56 +26,11 @@ around to seek. Give it a shot:</p>
        poster='http://video-js.zencoder.com/oceans-clip.jpg'
        controls>
   <source src='http://video-js.zencoder.com/oceans-clip.mp4' type='video/mp4' />
+  <track kind="metadata" src="oceans.vtt"></track>
 </video>
 <script>
 // initialize video.js
-var video = videojs('video');
-
-// here's an example of generating thumbnails from a sprited image:
-video.thumbnails({
-  0: {
-    src: 'thumbnails.png',
-    style: {
-      left: '-60px',
-      width: '600px',
-      height: '68px',
-      clip: 'rect(0, 120px, 68px, 0)'
-    }
-  },
-  10: {
-    style: {
-      left: '-180px',
-      clip: 'rect(0, 240px, 68px, 120px)'
-    }
-  },
-  20: {
-    style: {
-      left: '-300px',
-      clip: 'rect(0, 360px, 68px, 240px)'
-    }
-  },
-  30: {
-    style: {
-      left: '-420px',
-      clip: 'rect(0, 480px, 68px, 360px)'
-    }
-  },
-  40: {
-    style: {
-      left: '-540px',
-      clip: 'rect(0, 600px, 68px, 480px)'
-    }
-  }
-});
-
-// and here's an example of the bare-minimum plugin configuration:
-/*
-video.thumbnails({
-  0: {
-    src: 'example-thumbnail.png'
-  }
-});
-*/
+var video = videojs('video',{plugins:{thumbnails:{}}});
 </script>
 </body>
 </html>

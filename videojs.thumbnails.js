@@ -1,8 +1,6 @@
 (function() {
   var defaults = {
-      0: {
-        src: 'example-thumbnail.png'
-      }
+      width:0, height:0
     },
     extend = function() {
       var args, target, i, object, property;
@@ -37,22 +35,6 @@
       }
       return el;
     },
-    getVisibleWidth = function(el, width) {
-      var clip;
-
-      if (width) {
-        return parseFloat(width);
-      }
-
-      clip = getComputedStyle(el)('clip');
-      if (clip !== 'auto' && clip !== 'inherit') {
-        clip = clip.split(/(?:\(|\))/)[1].split(/(?:,| )/);
-        if (clip.length === 4) {
-          return (parseFloat(clip[1]) - parseFloat(clip[3]));
-        }
-      }
-      return 0;
-    },
     getScrollOffset = function() {
       if (window.pageXOffset) {
         return {
@@ -64,16 +46,44 @@
         x: document.documentElement.scrollLeft,
         y: document.documentElement.scrollTop
       };
+    },
+    parseImageLink = function(imglocation) {
+      var lsrc, clip, hashindex, hashstring;
+      hashindex = imglocation.indexOf('#');
+      if (hashindex === -1) {
+        return {src:imglocation,w:0,h:0,x:0,y:0};
+      } 
+      lsrc = imglocation.substring(0,hashindex);
+      hashstring = imglocation.substring(hashindex+1);
+      if (hashstring.substring(0,5) !== 'xywh=') {
+        return {src:lsrc,w:0,h:0,x:0,y:0};
+      } 
+      var data = hashstring.substring(5).split(',');
+      return {src:lsrc,w:data[2],h:data[3],x:data[0],y:data[1]};
     };
 
   /**
    * register the thubmnails plugin
    */
   videojs.plugin('thumbnails', function(options) {
-    var div, settings, img, player, progressControl, duration, moveListener, moveCancel;
+    var div, settings, img, player, progressControl, duration, moveListener, moveCancel, thumbTrack;
     settings = extend({}, defaults, options);
     player = this;
-
+    //detect which track we use. For now we just use the first metadata track
+    var numtracks = player.textTracks().length;
+    if (numtracks === 0) {
+      return;
+    }
+    i = 0;
+    while (i<numtracks) {
+      if (player.textTracks()[i].kind==='metadata') {
+        thumbTrack = player.textTracks()[i];
+        //Chrome needs this
+        thumbTrack.mode = 'hidden';
+        break;
+      }
+      i++;
+    }
     (function() {
       var progressControl, addFakeActive, removeFakeActive;
       // Android doesn't support :active and :hover on non-anchor and non-button elements
@@ -99,16 +109,7 @@
     div.className = 'vjs-thumbnail-holder';
     img = document.createElement('img');
     div.appendChild(img);
-    img.src = settings['0'].src;
     img.className = 'vjs-thumbnail';
-    extend(img.style, settings['0'].style);
-
-    // center the thumbnail over the cursor if an offset wasn't provided
-    if (!img.style.left && !img.style.right) {
-      img.onload = function() {
-        img.style.left = -(img.naturalWidth / 2) + 'px';
-      };
-    }
 
     // keep track of the duration to calculate correct thumbnail to display
     duration = player.duration();
@@ -150,27 +151,56 @@
       // to remove the progress control's left offset to know the mouse position
       // relative to the progress control
       mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
-      for (time in settings) {
-        if (mouseTime > time) {
-          active = Math.max(active, time);
+
+      //Now check which of the cues applies
+      var cnum = thumbTrack.cues.length;
+      i = 0;
+      while (i<cnum) {
+        var ccue = thumbTrack.cues[i];
+        if (ccue.startTime <= mouseTime && ccue.endTime >= mouseTime) {
+          setting = parseImageLink(ccue.text);
+          break;
         }
+        i++;
       }
-      setting = settings[active];
+      //None found, so show nothing
+      if (typeof setting === 'undefined') {
+        return;
+      } 
+
+      //Changed image?
       if (setting.src && img.src != setting.src) {
         img.src = setting.src;
       }
-      if (setting.style && img.style != setting.style) {
-        extend(img.style, setting.style);
+
+      //Fall back to plugin defaults in case no height/width is specified
+      if (setting.w === 0) {
+        setting.w = settings.width;
+      }
+      if (setting.h === 0) {
+        setting.h = settings.height;
       }
 
-      width = getVisibleWidth(img, setting.width || settings[0].width);
+      //Set the container width/height if it changed
+      if (div.style.width != setting.w || div.style.height != setting.h) {
+        div.style.width = setting.w + 'px';
+        div.style.height = setting.h + 'px';
+      }
+      //Set the image cropping
+      img.style.left = -(setting.x) + 'px';
+      img.style.top = (setting.y) + 'px';
+      img.style.clip = 'rect('+setting.y+'px,'+(setting.w+setting.x)+'px,'+(setting.y+setting.h)+'px,'+setting.x+'px)';
+      
+      width = setting.w;
       halfWidth = width / 2;
 
       // make sure that the thumbnail doesn't fall off the right side of the left side of the player
       if ( (left + halfWidth) > right ) {
-        left -= (left + halfWidth) - right;
+        left = right - width;
       } else if (left < halfWidth) {
-        left = halfWidth;
+        left = 0;
+      } else {
+        left = left - halfWidth;
       }
 
       div.style.left = left + 'px';
