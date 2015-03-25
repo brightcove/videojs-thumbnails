@@ -47,15 +47,15 @@
         y: document.documentElement.scrollTop
       };
     },
-    parseImageLink = function(imglocation){
+    parseImageLink = function(imglocation) {
       var lsrc, clip, hashindex, hashstring;
       hashindex = imglocation.indexOf('#');
-      if(hashindex === -1){
+      if (hashindex === -1) {
         return {src:imglocation,w:0,h:0,x:0,y:0};
       } 
       lsrc = imglocation.substring(0,hashindex);
       hashstring = imglocation.substring(hashindex+1);
-      if(hashstring.substring(0,5) !== 'xywh='){
+      if (hashstring.substring(0,5) !== 'xywh=') {
         return {src:lsrc,w:0,h:0,x:0,y:0};
       } 
       var data = hashstring.substring(5).split(',');
@@ -71,10 +71,12 @@
     player = this;
     //detect which track we use. For now we just use the first metadata track
     var numtracks = player.textTracks().length;
-    if(numtracks === 0) return;
+    if (numtracks === 0) {
+      return;
+    }
     i = 0;
-    while(i<numtracks){
-      if(player.textTracks()[i].kind==='metadata'){
+    while (i<numtracks) {
+      if (player.textTracks()[i].kind==='metadata') {
         thumbTrack = player.textTracks()[i];
         //Chrome needs this
         thumbTrack.mode = 'hidden';
@@ -153,16 +155,18 @@
       //Now check which of the cues applies
       var cnum = thumbTrack.cues.length;
       i = 0;
-      while(i<cnum){
+      while (i<cnum) {
         var ccue = thumbTrack.cues[i];
-        if(ccue.startTime <= mouseTime && ccue.endTime >= mouseTime){
+        if (ccue.startTime <= mouseTime && ccue.endTime >= mouseTime) {
           setting = parseImageLink(ccue.text);
           break;
         }
         i++;
       }
       //None found, so show nothing
-      if(typeof setting === 'undefined') return;
+      if (typeof setting === 'undefined') {
+        return;
+      } 
 
       //Changed image?
       if (setting.src && img.src != setting.src) {
@@ -170,15 +174,15 @@
       }
 
       //Fall back to plugin defaults in case no height/width is specified
-      if(setting.w === 0){
+      if (setting.w === 0) {
         setting.w = settings.width;
       }
-      if(setting.h === 0){
+      if (setting.h === 0) {
         setting.h = settings.height;
       }
 
       //Set the container width/height if it changed
-      if (div.style.width != setting.w || div.style.height != setting.h){
+      if (div.style.width != setting.w || div.style.height != setting.h) {
         div.style.width = setting.w + 'px';
         div.style.height = setting.h + 'px';
       }
