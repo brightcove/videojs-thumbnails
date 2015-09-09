@@ -59,7 +59,7 @@
         return {src:lsrc,w:0,h:0,x:0,y:0};
       } 
       var data = hashstring.substring(5).split(',');
-      return {src:lsrc,w:data[2],h:data[3],x:data[0],y:data[1]};
+      return {src:lsrc,w:parseInt(data[2]),h:parseInt(data[3]),x:parseInt(data[0]),y:parseInt(data[1])};
     };
 
   /**
@@ -188,7 +188,7 @@
       }
       //Set the image cropping
       img.style.left = -(setting.x) + 'px';
-      img.style.top = (setting.y) + 'px';
+      img.style.top = -(setting.y) + 'px';
       img.style.clip = 'rect('+setting.y+'px,'+(setting.w+setting.x)+'px,'+(setting.y+setting.h)+'px,'+setting.x+'px)';
       
       width = setting.w;
