@@ -1,4 +1,4 @@
-import videojs from 'videojs/video.js';
+import videojs from 'video.js';
 
 (function() {
   var defaults = {
