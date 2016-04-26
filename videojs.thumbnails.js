@@ -127,7 +127,7 @@ import videojs from 'videojs';
 
     // add the thumbnail to the player
     progressControl = player.controlBar.progressControl;
-    progressControl.el().appendChild(div);
+    player.controlBar.el().appendChild(div);
 
     // find the proper element to use for time calculations
     var eleForTime;
@@ -186,6 +186,7 @@ import videojs from 'videojs';
       }
 
       div.style.left = left + 'px';
+      div.style.display = 'block';
     };
 
     // update the thumbnail while hovering
@@ -194,6 +195,7 @@ import videojs from 'videojs';
 
     moveCancel = function(event) {
       div.style.left = '-1000px';
+      div.style.display = 'none';
     };
 
     // move the placeholder out of the way when not hovering
