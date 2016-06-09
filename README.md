@@ -54,3 +54,12 @@ If your thumbnails do not include specified width and height in the VTT file (vi
 var video = videojs('video',{plugins:{thumbnails:{width:120,height:90}}});
 </script>
 ```
+
+you can add optional source if you want to use path from another domain
+```html
+<script>
+// initialize video.js
+var video = videojs('video',{plugins:{thumbnails:{width:120,height:90, source : "/path/thumbnail/"}}});
+</script>
+```
+option source default is ""
