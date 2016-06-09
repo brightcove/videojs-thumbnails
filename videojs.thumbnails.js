@@ -153,7 +153,7 @@
       mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
 
       //Now check which of the cues applies
-      var cnum = thumbTrack.cues.length;
+      var cnum = thumbTrack&&thumbTrack.cues.length;
       i = 0;
       while (i<cnum) {
         var ccue = thumbTrack.cues[i];
