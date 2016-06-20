@@ -1,6 +1,6 @@
 (function() {
   var defaults = {
-      width:0, height:0, source : ""
+      width:0, height:0, basePath : ""
     },
     extend = function() {
       var args, target, i, object, property;
@@ -56,10 +56,10 @@
       lsrc = imglocation.substring(0,hashindex);
       hashstring = imglocation.substring(hashindex+1);
       if (hashstring.substring(0,5) !== 'xywh=') {
-        return {src:defaults.source + lsrc,w:0,h:0,x:0,y:0};
+        return {src:defaults.basePath + lsrc,w:0,h:0,x:0,y:0};
       } 
       var data = hashstring.substring(5).split(',');
-      return {src:defaults.source + lsrc,w:parseInt(data[2]),h:parseInt(data[3]),x:parseInt(data[0]),y:parseInt(data[1])};
+      return {src:defaults.basePath + lsrc,w:parseInt(data[2]),h:parseInt(data[3]),x:parseInt(data[0]),y:parseInt(data[1])};
     };
 
   /**
@@ -67,7 +67,7 @@
    */
   videojs.plugin('thumbnails', function(options) {
     var div, settings, img, player, progressControl, duration, moveListener, moveCancel, thumbTrack;
-    defaults.source = options.source || defaults.source;
+    defaults.basePath = options.basePath || defaults.basePath;
     settings = extend({}, defaults, options);
     player = this;
     //detect which track we use. For now we just use the first metadata track

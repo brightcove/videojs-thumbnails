@@ -55,11 +55,10 @@ var video = videojs('video',{plugins:{thumbnails:{width:120,height:90}}});
 </script>
 ```
 
-you can add optional source if you want to use path from another domain
+You can add an optional basePath if you want to use images hosted on another domain
 ```html
 <script>
 // initialize video.js
-var video = videojs('video',{plugins:{thumbnails:{width:120,height:90, source : "/path/thumbnail/"}}});
+var video = videojs('video',{plugins:{thumbnails:{width:120,height:90, basePath : "//external.url/basepath/"}}});
 </script>
 ```
-option source default is ""
