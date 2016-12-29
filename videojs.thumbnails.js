@@ -4,6 +4,20 @@
         src: 'example-thumbnail.png'
       }
     },
+    on = function(el,eventType,handler)
+    {
+      if (el.addEventListener)
+	el.addEventListener(eventType,handler);
+      else
+	el.attachEvent('on'+eventType,handler);
+    },
+    off = function(el,eventType,handler,c)
+    {
+      if (el.removeEventListener)
+	el.removeEventListener(eventType,handler);
+      else
+	el.detachEvent('on'+eventType,handler);
+    },
     extend = function() {
       var args, target, i, object, property;
       args = Array.prototype.slice.call(arguments);
@@ -70,7 +84,7 @@
    * register the thubmnails plugin
    */
   videojs.plugin('thumbnails', function(options) {
-    var div, settings, img, player, progressControl, duration, moveListener, moveCancel;
+    var div, settings, img, player, progressControl, duration, moveListener, moveCancel, downListener, upListener, isMouseDown, isMouseOut;
     settings = extend({}, defaults, options);
     player = this;
 
@@ -128,7 +142,7 @@
     progressControl.el().appendChild(div);
 
     moveListener = function(event) {
-      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect;
+      var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect, handle, handleW;
       active = 0;
       pageXOffset = getScrollOffset().x;
       clientRect = offsetParent(progressControl.el()).getBoundingClientRect();
@@ -149,10 +163,12 @@
       // `left` applies to the mouse position relative to the player so we need
       // to remove the progress control's left offset to know the mouse position
       // relative to the progress control
-      mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
+      handle = progressControl.seekBar.handle;
+      handleW = handle.width();
+      mouseTime = Math.floor((left - progressControl.el().offsetLeft - handleW/2) / (progressControl.width() - handleW) * duration);
       for (time in settings) {
-        if (mouseTime > time) {
-          active = Math.max(active, time);
+        if (mouseTime >= time) {
+          active = time;
         }
       }
       setting = settings[active];
@@ -176,12 +192,34 @@
       div.style.left = left + 'px';
     };
 
+    downListener = function(event) {
+      // User is scrubbing, continue displaying thumbnails even if mouse gets out of seek bar
+      isMouseDown = true;
+      isMouseOut = false;
+      progressControl.off('mousemove', moveListener);
+      on(document,'mousemove',moveListener);
+      on(document,'mouseup',upListener);
+    };
+
+    upListener = function(event) {
+      isMouseDown = false;
+      if (isMouseOut)
+	moveCancel(event);
+      off(document,'mousemove',moveListener);
+      off(document,'mouseup',upListener);
+      progressControl.on('mousemove', moveListener);
+    };
+
     // update the thumbnail while hovering
     progressControl.on('mousemove', moveListener);
     progressControl.on('touchmove', moveListener);
+    progressControl.on('mousedown', downListener);
 
     moveCancel = function(event) {
-      div.style.left = '-1000px';
+      if (isMouseDown)
+	isMouseOut = true;
+      else
+	div.style.left = '-1000px';
     };
 
     // move the placeholder out of the way when not hovering
