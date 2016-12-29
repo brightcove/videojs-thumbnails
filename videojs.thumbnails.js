@@ -1,3 +1,5 @@
+import videojs from 'videojs';
+
 (function() {
   var defaults = {
       0: {
@@ -125,7 +127,17 @@
 
     // add the thumbnail to the player
     progressControl = player.controlBar.progressControl;
-    progressControl.el().appendChild(div);
+    player.controlBar.el().appendChild(div);
+
+    // find the proper element to use for time calculations
+    var eleForTime;
+    for( var e in progressControl.el().childNodes ) {
+      var childNode = progressControl.el().childNodes[e];
+      if( childNode.className.indexOf('vjs-progress-holder') >= 0 ) {
+        eleForTime = childNode;
+        break;
+      }
+    }
 
     moveListener = function(event) {
       var mouseTime, time, active, left, setting, pageX, right, width, halfWidth, pageXOffset, clientRect;
@@ -142,16 +154,16 @@
       // find the page offset of the mouse
       left = pageX || (event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft);
       // subtract the page offset of the positioned offset parent
-      left -= offsetParent(progressControl.el()).getBoundingClientRect().left + pageXOffset;
+      left -= eleForTime.getBoundingClientRect().left + pageXOffset;
 
       // apply updated styles to the thumbnail if necessary
       // mouseTime is the position of the mouse along the progress control bar
       // `left` applies to the mouse position relative to the player so we need
       // to remove the progress control's left offset to know the mouse position
       // relative to the progress control
-      mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
+      mouseTime = left / eleForTime.getBoundingClientRect().width * duration;
       for (time in settings) {
-        if (mouseTime > time) {
+        if (mouseTime >= time) {
           active = Math.max(active, time);
         }
       }
@@ -174,6 +186,7 @@
       }
 
       div.style.left = left + 'px';
+      div.style.display = 'block';
     };
 
     // update the thumbnail while hovering
@@ -182,6 +195,7 @@
 
     moveCancel = function(event) {
       div.style.left = '-1000px';
+      div.style.display = 'none';
     };
 
     // move the placeholder out of the way when not hovering
