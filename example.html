@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Video.js Thumbnails Example</title>
-  <link href="node_modules/video.js/dist/video-js/video-js.css" rel="stylesheet">
+  <link href="node_modules/video.js/dist/video-js.css" rel="stylesheet">
   <link href="videojs.thumbnails.css" rel="stylesheet">
   <style>
     p {
@@ -11,7 +11,7 @@
       padding: 10px;
     }
   </style>
-<script src="node_modules/video.js/dist/video-js/video.js"></script>
+<script src="node_modules/video.js/dist/video.js"></script>
 <script src='videojs.thumbnails.js'></script>
 </head>
 <body>
@@ -33,39 +33,31 @@ var video = videojs('video');
 
 // here's an example of generating thumbnails from a sprited image:
 video.thumbnails({
-  0: {
-    src: 'thumbnails.png',
-    style: {
-      left: '-60px',
-      width: '600px',
-      height: '68px',
-      clip: 'rect(0, 120px, 68px, 0)'
+    0: {
+      src: 'url(\"https://i9.ytimg.com/sb/9xkiaw-uyyE/storyboard3_L2/M0.jpg?sigh=CfYdoMksBZzEZbkeKHWPKa7L9Xg\")',
+      width: '100px',
+      height: '80px',
+      left: '80px',
+      bottom: '27px',
+      x: '-470px',
+      y: '-497px',
+    },
+    10: {
+      x: '-470px',
+      y: '-430px',
+    },
+    20: {
+      x: '-450px',
+      y: '-400px',
+    },
+    30: {
+      x: '-420px',
+      y: '-350px',
+    },
+    40: {
+      x: '-350px',
+      y: '-200px',
     }
-  },
-  10: {
-    style: {
-      left: '-180px',
-      clip: 'rect(0, 240px, 68px, 120px)'
-    }
-  },
-  20: {
-    style: {
-      left: '-300px',
-      clip: 'rect(0, 360px, 68px, 240px)'
-    }
-  },
-  30: {
-    style: {
-      left: '-420px',
-      clip: 'rect(0, 480px, 68px, 360px)'
-    }
-  },
-  40: {
-    style: {
-      left: '-540px',
-      clip: 'rect(0, 600px, 68px, 480px)'
-    }
-  }
 });
 
 // and here's an example of the bare-minimum plugin configuration:

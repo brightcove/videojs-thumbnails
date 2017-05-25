@@ -97,22 +97,13 @@
     // create the thumbnail
     div = document.createElement('div');
     div.className = 'vjs-thumbnail-holder';
-    img = document.createElement('img');
-    div.appendChild(img);
-    img.src = settings['0'].src;
-    img.className = 'vjs-thumbnail';
-    extend(img.style, settings['0'].style);
-
-    // center the thumbnail over the cursor if an offset wasn't provided
-    if (!img.style.left && !img.style.right) {
-      img.onload = function() {
-        img.style.left = -(img.naturalWidth / 2) + 'px';
-      };
-    }
+    div.style.bottom = settings[0].bottom;
+    div.style.height = settings[0].height;
+    div.style.left = settings[0].left;
 
     // keep track of the duration to calculate correct thumbnail to display
     duration = player.duration();
-    
+
     // when the container is MP4
     player.on('durationchange', function(event) {
       duration = player.duration();
@@ -149,22 +140,23 @@
       // `left` applies to the mouse position relative to the player so we need
       // to remove the progress control's left offset to know the mouse position
       // relative to the progress control
-      mouseTime = Math.floor((left - progressControl.el().offsetLeft) / progressControl.width() * duration);
+      var mouseTimeHMS  = document.getElementsByClassName("vjs-mouse-display")[0].getAttribute("data-current-time").split(":");
+      var mouseTime = 0;
+      for(var i = mouseTimeHMS.length - 1; i >= 0; i--)
+          mouseTime += parseInt((i == mouseTimeHMS.length-1) ? (mouseTimeHMS[i]) : ((i == mouseTimeHMS.length-2) ? (mouseTimeHMS[i] * 60) : ((i == mouseTimeHMS.length-3) ? (mouseTimeHMS[i] * 60 * 60) : (0))));
+
       for (time in settings) {
         if (mouseTime > time) {
           active = Math.max(active, time);
         }
       }
       setting = settings[active];
-      if (setting.src && img.src != setting.src) {
-        img.src = setting.src;
-      }
-      if (setting.style && img.style != setting.style) {
-        extend(img.style, setting.style);
-      }
 
       width = getVisibleWidth(img, setting.width || settings[0].width);
       halfWidth = width / 2;
+
+      div.style.width = width + 'px';
+      div.style.background = settings[0].src + setting.x + " " + setting.y +" / 800px 600px";
 
       // make sure that the thumbnail doesn't fall off the right side of the left side of the player
       if ( (left + halfWidth) > right ) {
@@ -173,7 +165,7 @@
         left = halfWidth;
       }
 
-      div.style.left = left + 'px';
+      div.style.left = (left - halfWidth) + 'px';
     };
 
     // update the thumbnail while hovering
